@@ -1,35 +1,50 @@
-import Link from 'next/link'
+'use client'
 
-interface Category {
-  name: string;
-  slug: string;
+import Link from 'next/link'
+import { Menu, X } from 'lucide-react'
+import { useSidebarState } from '../hooks/useSidebarState'
+import * as React from 'react'
+
+interface props{
+  categories: any;
 }
 
-const categories: Category[] = [
-  { name: 'Web Development', slug: 'web-dev' },
-  { name: 'Mobile Development', slug: 'mobile-dev' },
-  { name: 'DevOps', slug: 'devops' },
-  { name: 'Machine Learning', slug: 'ml' },
-  { name: 'Data Science', slug: 'data-science' },
-]
+export default function Sidebar({categories}:props) {
+  const { isOpen, setIsOpen } = useSidebarState()
 
-export default function Sidebar() {
   return (
-    <aside className="w-64 pr-4">
-      <h2 className="text-xl font-bold mb-4 font-mono">Categories</h2>
-      <ul className="space-y-2">
-        {categories.map((category) => (
-          <li key={category.slug}>
-            <Link 
-              href={`/category/${category.slug}`}
-              className="text-muted-foreground hover:text-foreground transition-colors font-mono"
-            >
-              {category.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </aside>
+    <>
+      <button
+        className="md:hidden fixed top-4 left-4 z-30 p-2 bg-background border border-border rounded-md"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle sidebar"
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+      <aside className={`
+        fixed top-0 left-0 z-20 h-full w-64 bg-background border-r border-border
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:relative md:translate-x-0
+      `}>
+        <div className="p-4 pt-16 md:pt-4">
+          <h2 className="text-xl font-bold mb-4 font-mono">Categories</h2>
+          <ul className="space-y-2">
+            {categories.length > 0 ? categories.map((category: any) => (
+              <li key={category.slug}>
+                <Link
+                  href={`/category/${category.slug}`}
+                  className="text-muted-foreground hover:text-foreground transition-colors font-mono"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              </li>
+            )) : null}
+          </ul>
+        </div>
+      </aside>
+    </>
   )
 }
 

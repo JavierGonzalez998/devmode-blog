@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url               = env("DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Categories {
@@ -15,14 +15,53 @@ model Categories {
   Post Post[]
 }
 
+enum Role {
+  user
+  admin
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  email     String   @unique
-  password  String
-  posts     Post[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(user)
+  password      String?
+  accounts      Account[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Post      Post[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
 
 model Post {
@@ -33,7 +72,7 @@ model Post {
   categoryId Int
   published  Boolean    @default(false)
   author     User       @relation(fields: [authorId], references: [id])
-  authorId   Int
+  authorId   String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }

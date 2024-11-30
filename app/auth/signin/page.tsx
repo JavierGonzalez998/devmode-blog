@@ -2,6 +2,7 @@
 import { Formik, Field, Form, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation'
 import { loginAction } from '@/actions/auth-action';
+import { startTransition, useTransition } from 'react';
 
 
 export interface Values {
@@ -11,7 +12,7 @@ export interface Values {
 
 export default function SignIn() {
   const router = useRouter()
-
+  const [isPending, StartTransition] = useTransition();
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Formik
@@ -19,9 +20,16 @@ export default function SignIn() {
           email: '',
           password: ''
         }}
-        onSubmit={async (values: Values, {setSubmitting}: FormikHelpers<Values>) => {
-          await loginAction(values);
-          setSubmitting(false)
+        onSubmit={(values: Values, {setSubmitting}: FormikHelpers<Values>) => {
+            startTransition(async() => {
+              const response = await loginAction(values);
+              setSubmitting(false)
+              if(response.error){
+                console.log(response.error)
+              }else{
+                router.push("/dashboard")
+              }
+            })
         }}
       >
         <Form className="bg-card p-8 rounded-lg shadow-md w-96">
@@ -51,6 +59,7 @@ export default function SignIn() {
           <button
             type="submit"
             className="w-full bg-primary text-primary-foreground p-2 rounded-md hover:bg-primary/90 transition-colors"
+            disabled={isPending}
           >
             Sign In
           </button>

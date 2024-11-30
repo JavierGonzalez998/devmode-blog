@@ -2,6 +2,7 @@
 
 import { Values } from "@/app/auth/signin/page"
 import { signIn } from "@/auth"
+import { AuthError } from "next-auth"
 
 export const loginAction = async(values:Values) => {
     try {
@@ -10,7 +11,11 @@ export const loginAction = async(values:Values) => {
             password: values.password,
             redirect: false
         })
+        return {success: true}
     } catch (error) {
-        console.log(error)
+        if(error instanceof AuthError){
+            return { error: error.cause?.err?.message};
+        }
+        return {error: "error 500"}
     }
 }

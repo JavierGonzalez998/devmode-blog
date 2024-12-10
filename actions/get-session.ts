@@ -2,7 +2,7 @@
 
 import { auth } from '@/auth'
 
-export default async function GetSession() {
+export async function GetSession() {
     const session = await auth();
     return session
 }

@@ -1,17 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-import BlogCard from './components/blog-card'
-
-const prisma = new PrismaClient()
-
-async function getPosts() {
-
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    include: { author: true },
-    orderBy: { createdAt: 'desc' },
-  })
-  return posts
-}
+import BlogCard from '@/app/components/blog-card'
+import { getPosts } from '@/actions/posts-actions'
 
 export default async function Home() {
   const posts = await getPosts()

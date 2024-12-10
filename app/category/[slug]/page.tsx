@@ -1,3 +1,5 @@
+import BlogCard from "@/app/components/blog-card"
+
 export default function CategoryPage({ params }: { params: { slug: string } }) {
   const posts = blogPosts[params.slug] || []
 

@@ -1,9 +1,7 @@
-import { Session } from "@/app/providers";
 import { auth } from "@/auth";
 
 export default async function DashboardPage(){
     const session = await auth()
-    console.log(session)
     if(!session){
         return <div>Not authenticated</div>
     }
@@ -12,7 +10,7 @@ export default async function DashboardPage(){
         <div className="container">
             <pre>
                 {
-                    JSON.stringify(Session, null, 2)
+                    JSON.stringify(session, null, 2)
                 }
             </pre>
         </div>

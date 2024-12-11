@@ -4,6 +4,7 @@ import { ThemeProvider } from "./providers";
 import Header from "@/app/components/header";
 import Sidebar from "@/app/components/sidebar";
 import { getCategories } from "@/actions/categories-actions";
+import { NotificationStoreProvider } from "@/lib/zustand/providers/NotificationStateProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
@@ -25,6 +26,7 @@ export default async function RootLayout({
         className={`${inter.className} ${jetbrainsMono.className} bg-background text-foreground`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <NotificationStoreProvider>
           <div className="flex flex-col h-screen">
             <Header />
             <div className="flex gap-3 h-5/6">
@@ -33,7 +35,8 @@ export default async function RootLayout({
               </div>
               <main className="flex justify-center items-center w-full">{children}</main>
             </div>
-          </div>
+          </div>            
+          </NotificationStoreProvider>
         </ThemeProvider>
       </body>
     </html>

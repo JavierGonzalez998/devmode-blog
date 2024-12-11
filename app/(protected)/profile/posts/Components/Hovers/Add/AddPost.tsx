@@ -49,7 +49,7 @@ export default function ModalAdd() {
                 Para añadir un post, sólo debes llenar los siguientes campos
               </DialogDescription>
             </DialogHeader>
-            <FormPost />
+            <FormNewPost />
           </DialogContent>
         </Dialog>
       </>
@@ -67,7 +67,7 @@ export default function ModalAdd() {
               Para añadir un post, sólo debes llenar los siguientes campos
             </DrawerDescription>
           </DrawerHeader>
-          <FormPost />
+          <FormNewPost />
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
@@ -79,6 +79,4 @@ export default function ModalAdd() {
   );
 }
 
-function FormPost() {
-  return <FormNewPost />;
-}
+

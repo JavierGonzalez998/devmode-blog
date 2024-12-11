@@ -15,8 +15,6 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { EmojiNode } from "./plugins/emoji-plugin/EmoiNode";
 import {
-  $getRoot,
-  $getSelection,
   $isTextNode,
   DOMConversionMap,
   DOMExportOutput,
@@ -154,13 +152,14 @@ interface props{
 }
 
 export default function ContentInput({value, onChange, id, name}:props) {
-
-  const handleChange = (state: EditorState) => {
-    const parsed = state.toJSON();
+  const handleEditorChange = (editorState: EditorState) => {
+    const json = editorState.toJSON(); // Convierte el estado del editor a JSON o texto
+    const serializedValue = JSON.stringify(json);
     if(onChange){
-      onChange(JSON.stringify(parsed))
+      onChange(serializedValue);
     }
-  }
+  };
+
   return (
     <div className="max-w-full">
       <LexicalComposer initialConfig={editorConfig}>
@@ -185,7 +184,7 @@ export default function ContentInput({value, onChange, id, name}:props) {
             <HistoryPlugin />
             <EmojiPlugin/>
             <AutoFocusPlugin />
-            <OnChangePlugin onChange={(state:EditorState) => {handleChange(state)}}/>
+            <OnChangePlugin onChange={(state:EditorState) => handleEditorChange(state)}/>
           </div>
         </div>
       </LexicalComposer>

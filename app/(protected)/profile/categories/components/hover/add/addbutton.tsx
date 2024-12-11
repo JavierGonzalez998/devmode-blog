@@ -17,7 +17,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import FormNewPost from "../../Forms/FormNewPost";
+
+import FormNewCategory from "../../forms/add/addForm";
 
 export default function ModalAdd() {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -40,16 +41,16 @@ export default function ModalAdd() {
   if (isDesktop) {
     return (
       <>
-        <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
+        <Button onClick={() => setOpen(true)}>Agregar nueva categoría</Button>
         <Dialog open={open} onOpenChange={() => setOpen(false)}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Añadir Post</DialogTitle>
               <DialogDescription>
-                Para añadir un post, sólo debes llenar los siguientes campos
+                Para añadir una nueva categoría, sólo debes llenar los siguientes campos
               </DialogDescription>
             </DialogHeader>
-            <FormNewPost onClose={() => setOpen(false)} />
+            <FormNewCategory onClose={()=> {setOpen(false)}} />
           </DialogContent>
         </Dialog>
       </>
@@ -58,16 +59,16 @@ export default function ModalAdd() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
+      <Button onClick={() => setOpen(true)}>Agregar nueva categoría</Button>
       <Drawer open={open} onOpenChange={() => setOpen(false)}>
         <DrawerContent>
           <DrawerHeader className="text-left">
             <DrawerTitle>Añadir Post</DrawerTitle>
             <DrawerDescription>
-              Para añadir un post, sólo debes llenar los siguientes campos
+              Para añadir una nueva categoría, sólo debes llenar los siguientes campos
             </DrawerDescription>
           </DrawerHeader>
-          <FormNewPost onClose={() => setOpen(false)} />
+          <FormNewCategory onClose={()=> {setOpen(false)}} />
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>

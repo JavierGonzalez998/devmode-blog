@@ -33,7 +33,7 @@ export default async function RootLayout({
               <div className="h-full">
                 <Sidebar categories={categories} />
               </div>
-              <main className="flex justify-center items-center w-full">{children}</main>
+              <main className="flex flex-col justify-center items-center w-full">{children}</main>
             </div>
           </div>            
           </NotificationStoreProvider>

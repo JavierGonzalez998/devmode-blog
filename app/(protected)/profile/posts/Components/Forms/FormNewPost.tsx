@@ -2,20 +2,39 @@
 import { Formik, Field, FormikHelpers } from "formik";
 import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
 import ContentInput from "@/app/components/Lexical/ContentInput";
+import { GetSession } from "@/actions/get-session";
 interface FormValues {
   title: string;
   content: string;
   category: number;
 }
 import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
+import { usePostsStore } from "@/lib/zustand/providers/PostsStateProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { Session } from "next-auth";
 interface props{
   onClose: (v:boolean) => void;
 }
 
 export default function FormNewPost({onClose}:props) {
   const {categories} = useCategoryStore((store) => store);
+  const {addPost} = usePostsStore((posts) => posts)
   const {showToast} = useNotificationStore((store) => store)
+  const [session, setSession] = useState<Session|null>(null)
+
+  useEffect(()=> {
+    const FetchSession = async() =>{
+      const session = await GetSession()
+      if(session){
+        setSession(session)
+      }
+    }
+    
+    FetchSession()
+  },[])
+
+
   return (
     <Formik
       initialValues={{
@@ -29,20 +48,17 @@ export default function FormNewPost({onClose}:props) {
       ) => {
         setSubmitting(false);
         console.log(values)
-        const response = await fetch("/api/posts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: values.title,
-            content: values.content,
-          }),
-        });
-        if (response.ok) {
-          showToast("Post creado satisfactoriamente", "success")
+        if(session){
+          const email = session.user.email ? session.user.email : ''
+          const {success} = await addPost({title: values.title, content: values.content, idCat: values.category, email:email})
+          if (success) {
+            showToast("Post creado satisfactoriamente", "success")
+            onClose(false)
+          }
+        }else{
           onClose(false)
         }
+      
       }}
     >
        {({setFieldValue, handleSubmit }) => (

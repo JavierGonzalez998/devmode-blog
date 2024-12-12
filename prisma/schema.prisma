@@ -43,7 +43,7 @@ model post {
   published  Boolean    @default(false)
   authorId   Int
   createdAt  DateTime   @default(now())
-  updatedAt  DateTime?
+  updatedAt  DateTime
   user       user       @relation(fields: [authorId], references: [id], map: "Post_authorId_fkey")
   categories categories @relation(fields: [categoryId], references: [id], map: "Post_categoryId_fkey")
 
@@ -60,7 +60,7 @@ model user {
   role          user_role @default(user)
   password      String?
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime?
+  updatedAt     DateTime
   account       account[]
   post          post[]
 }

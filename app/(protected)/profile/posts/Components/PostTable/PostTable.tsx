@@ -1,80 +1,52 @@
-"use client"
-
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+'use client'
 
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { useEffect } from "react";
+import { usePostsStore } from "@/lib/zustand/providers/PostsStateProvider";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-}
 
-export function PostTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
+export default function PostTable() {
+  const {Posts, getAllPosts} = usePostsStore((store) => store);
+
+  useEffect(() => {
+    getAllPosts()
+    
+  }, [getAllPosts])
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  )
+    <Table>
+      <TableCaption>Listado de los posts</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">ID</TableHead>
+          <TableHead>Titulo</TableHead>
+          <TableHead>Categoría</TableHead>
+          <TableHead>Estado</TableHead>
+          <TableHead className="text-center">Acción</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          Posts && Posts.map((categories, index) => (
+            <TableRow key={index}>
+            <TableCell className="font-medium">{categories.id}</TableCell>
+            <TableCell>{categories.title}</TableCell>
+            <TableCell>{categories.categories.name}</TableCell>
+            <TableCell className="flex justify-center items-center gap-3">
+
+            </TableCell>
+          </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  );
 }

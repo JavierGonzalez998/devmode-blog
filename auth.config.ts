@@ -31,14 +31,14 @@ export default {
         }
         //verificacion de email
         if (!user.emailVerified) {
-          const verifyTokenExists = await prisma.verificationToken.findFirst({
+          const verifyTokenExists = await prisma.verificationtoken.findFirst({
             where: {
               identifier: user.email,
             },
           });
           // si existe un token, se elimina
           if (verifyTokenExists?.identifier) {
-            await prisma.verificationToken.delete({
+            await prisma.verificationtoken.delete({
               where: {
                 identifier_token: {
                   identifier: String(user.email),
@@ -49,7 +49,7 @@ export default {
           }
           const token = nanoid();
 
-          await prisma.verificationToken.create({
+          await prisma.verificationtoken.create({
             data: {
               identifier: user.email,
               token,

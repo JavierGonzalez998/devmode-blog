@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
         __dirname,
         'node_modules/emoji-datasource-facebook/img/facebook/64/'
       ),
+      
     };
     return config;
   },

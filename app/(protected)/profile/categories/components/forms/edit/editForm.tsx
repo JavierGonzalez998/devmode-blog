@@ -6,31 +6,34 @@ interface FormValues {
     description: string
   }
   import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
-import { replaceAccent } from "@/lib/utils";
   interface props{
     onClose: (v:boolean) => void;
+    title:string; 
+    description: string;
+    id:number
   }
+  import { replaceAccent } from "@/lib/utils";
   
-  export default function FormNewCategory({onClose}:props) {
-    const {addCategories} = useCategoryStore((store) => store);
+  export default function FormEditCategory({onClose, title, description,id}:props) {
+    const {editCategories} = useCategoryStore((store) => store);
     const {showToast} = useNotificationStore((store) => store)
     return (
       <Formik
         initialValues={{
-          title: "",
-          description: "",
+          title: title,
+          description: description,
         }}
         onSubmit={async(
           values: FormValues,
           { setSubmitting }: FormikHelpers<FormValues>
         ) => {
           setSubmitting(false);
-          const success = await addCategories({...values, slug: replaceAccent(values.title).toLowerCase().replace(" ", "-")})
+          const success = await editCategories(id,{...values, slug: replaceAccent(values.title).toLowerCase().replace(" ", "-")})
           console.log(success)
           if(success){
-            showToast("Categoría agregada correctamente", "success")
+            showToast("Categoría editada correctamente", "success")
           }else{
-            showToast("Error al agregar la categoria", "error")
+            showToast("Error al editar la categoria", "error")
           }
           onClose(false)
         }}

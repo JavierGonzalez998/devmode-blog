@@ -1,10 +1,13 @@
 "use client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
+import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -17,10 +20,17 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import FormNewPost from "../../Forms/FormNewPost";
 
-export default function ModalAdd() {
+import { FaTrash } from "react-icons/fa";
 
+interface props {
+  title: string;
+  id: number;
+}
+
+export default function ModalDelete({ id, title }: props) {
+    const {deleteCategories} = useCategoryStore((store) => store)
+    const {showToast} = useNotificationStore((store) => store)
   const [open, setOpen] = React.useState<boolean>(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
 
@@ -37,20 +47,35 @@ export default function ModalAdd() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
+  const HandleDelete = async() => {
+    const success = await deleteCategories(id)
+    if(success){
+        showToast("Categoría eliminada satisfactoriamente", "success")
+    }else{
+        showToast("error al eliminar la categoria", "error")
+    }
+    setOpen(false)
+  }
 
   if (isDesktop) {
     return (
       <>
-        <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
+        <Button variant="destructive" onClick={() => setOpen(true)}>
+          <FaTrash />
+          Eliminar
+        </Button>
         <Dialog open={open} onOpenChange={() => setOpen(false)}>
-          <DialogContent className="sm:max-w-6xl">
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Añadir Post</DialogTitle>
+              <DialogTitle>Eliminar Categoria</DialogTitle>
               <DialogDescription>
-                Para añadir un post, sólo debes llenar los siguientes campos
+                Desea eliminar la categoria: {title}
               </DialogDescription>
             </DialogHeader>
-            <FormNewPost onClose={() => setOpen(false)} />
+            <DialogFooter>
+              <Button variant="destructive" onClick={() => HandleDelete()}>Eliminar</Button>
+              <Button variant="outline">Cancelar</Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </>
@@ -59,19 +84,22 @@ export default function ModalAdd() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
+      <Button variant="destructive" onClick={() => setOpen(true)}>
+        <FaTrash />
+        Eliminar
+      </Button>
       <Drawer open={open} onOpenChange={() => setOpen(false)}>
         <DrawerContent>
           <DrawerHeader className="text-left">
-            <DrawerTitle>Añadir Post</DrawerTitle>
+            <DrawerTitle>Eliminar Categoria</DrawerTitle>
             <DrawerDescription>
-              Para añadir un post, sólo debes llenar los siguientes campos
+              Desea eliminar la categoria: {title}
             </DrawerDescription>
           </DrawerHeader>
-          <FormNewPost onClose={() => setOpen(false)} />
           <DrawerFooter className="pt-2">
+            <Button variant="destructive">Eliminar</Button>
             <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">Cancelar</Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
@@ -79,5 +107,3 @@ export default function ModalAdd() {
     </>
   );
 }
-
-

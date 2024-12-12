@@ -1,7 +1,7 @@
 "use server"
 
-import { Values } from "@/components/Auth/Login/LoginForm"
-import {RegisterValues} from '@/components/Auth/Register/RegisterForm'; 
+import { Values } from "@/app/auth/login/components/LoginForm"
+import {RegisterValues} from '@/app/auth/register/components/RegisterForm'; 
 import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { prisma } from "@/prisma";
@@ -42,15 +42,11 @@ export const RegisterAction = async(values: RegisterValues) => {
             data:{
                 name: values.name,
                 email: values.email,
-                password
+                password,
+                updatedAt: new Date().toISOString()
             }
         })
 
-        await signIn("credentials", {
-            email:values.email,
-            password,
-            redirect:false
-        })
         return {success:true}
     }catch(error){
         if(error instanceof AuthError){

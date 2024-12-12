@@ -6,12 +6,10 @@ import { useSidebarState } from "@/app/hooks/useSidebarState";
 import * as React from "react";
 import Divider from "./divider";
 import { GetSession } from "@/actions/get-session";
+import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
 
-interface props {
-  categories: { slug: string; name: string }[] | [];
-}
-
-export default function Sidebar({ categories }: props) {
+export default function Sidebar() {
+  const { categories, getCategories } = useCategoryStore((store) => store);
   const { isOpen, setIsOpen } = useSidebarState();
   const [role, setRole] = React.useState<string | null>(null);
 
@@ -23,8 +21,12 @@ export default function Sidebar({ categories }: props) {
   };
 
   React.useEffect(() => {
-    FetchRole()
-  },[])
+    FetchRole();
+  }, []);
+
+  React.useEffect(() => {
+    getCategories();
+  }, [getCategories]);
 
   return (
     <>
@@ -55,19 +57,21 @@ export default function Sidebar({ categories }: props) {
             </Link>
           </div>
           <h2 className="text-xl font-bold mb-4 font-mono">Categories</h2>
-          <ul className="space-y-2 max-h-96 overflow-y-scroll">
-            {categories.length > 0
-              ? categories.map((category: { slug: string; name: string }) => (
-                  <li key={category.slug}>
-                    <Link
-                      href={`/category/${category.slug}`}
-                      className="text-muted-foreground hover:text-foreground transition-colors font-mono"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                  </li>
-                ))
+          <ul className="space-y-2 max-h-96">
+            {categories && categories.length > 0
+              ? categories.map(
+                  (category: { id: number; slug: string; name: string }) => (
+                    <li key={category.id.toString()}>
+                      <Link
+                        href={`/category/${category.slug}`}
+                        className="text-muted-foreground hover:text-foreground transition-colors font-mono"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {category.name}
+                      </Link>
+                    </li>
+                  )
+                )
               : null}
           </ul>
           <Divider />
@@ -80,21 +84,30 @@ export default function Sidebar({ categories }: props) {
               >
                 Profile
               </Link>
-              <Link
-                href={`/profile/posts`}
-                className="text-muted-foreground hover:text-foreground transition-colors font-mono"
-                onClick={() => setIsOpen(false)}
-              >
-                My Posts
-              </Link>
               {role == "admin" ? (
-                <Link
-                  href={`/profile`}
-                  className="text-muted-foreground hover:text-foreground transition-colors font-mono"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Manage
-                </Link>
+                <>
+                  <Link
+                    href={`/profile/posts`}
+                    className="text-muted-foreground hover:text-foreground transition-colors font-mono"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    My Posts
+                  </Link>
+                  <Link
+                    href={`/profile/categories`}
+                    className="text-muted-foreground hover:text-foreground transition-colors font-mono"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Categorias
+                  </Link>
+                  <Link
+                    href={`/profile`}
+                    className="text-muted-foreground hover:text-foreground transition-colors font-mono"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Manage
+                  </Link>
+                </>
               ) : null}
             </ul>
           )}

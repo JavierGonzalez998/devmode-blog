@@ -23,6 +23,7 @@ export default function LoginForm() {
             onSubmit={(values: Values, { setSubmitting }: FormikHelpers<Values>) => {
                 startTransition(async () => {
                     const response = await loginAction(values);
+                    console.log(response)
                     setSubmitting(false)
                     if (response.error) {
                         console.log(response.error)

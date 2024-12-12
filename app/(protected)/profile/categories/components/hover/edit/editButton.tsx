@@ -17,10 +17,17 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import FormNewPost from "../../Forms/FormNewPost";
 
-export default function ModalAdd() {
+import FormEditCategory from "../../forms/edit/editForm";
+import { CiEdit } from "react-icons/ci";
 
+interface props {
+  title: string;
+  id: number;
+  description: string;
+}
+
+export default function ModalEdit({ id, title, description }: props) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
 
@@ -37,20 +44,30 @@ export default function ModalAdd() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-
   if (isDesktop) {
     return (
       <>
-        <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
+        <Button color="secondary" onClick={() => setOpen(true)}>
+          <CiEdit />
+          Editar
+        </Button>
         <Dialog open={open} onOpenChange={() => setOpen(false)}>
-          <DialogContent className="sm:max-w-6xl">
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Añadir Post</DialogTitle>
+              <DialogTitle>Editar Categoria</DialogTitle>
               <DialogDescription>
-                Para añadir un post, sólo debes llenar los siguientes campos
+                Para editar la categoría, sólo debes llenar los siguientes
+                campos
               </DialogDescription>
             </DialogHeader>
-            <FormNewPost onClose={() => setOpen(false)} />
+            <FormEditCategory
+              id={id}
+              title={title}
+              description={description}
+              onClose={() => {
+                setOpen(false);
+              }}
+            />
           </DialogContent>
         </Dialog>
       </>
@@ -59,16 +76,26 @@ export default function ModalAdd() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
+      <Button color="secondary" onClick={() => setOpen(true)}>
+        <CiEdit />
+        Editar
+      </Button>
       <Drawer open={open} onOpenChange={() => setOpen(false)}>
         <DrawerContent>
           <DrawerHeader className="text-left">
-            <DrawerTitle>Añadir Post</DrawerTitle>
+            <DrawerTitle>Editar Categoria</DrawerTitle>
             <DrawerDescription>
-              Para añadir un post, sólo debes llenar los siguientes campos
+              Para editar la categoría, sólo debes llenar los siguientes campos
             </DrawerDescription>
           </DrawerHeader>
-          <FormNewPost onClose={() => setOpen(false)} />
+          <FormEditCategory
+            id={id}
+            title={title}
+            description={description}
+            onClose={() => {
+              setOpen(false);
+            }}
+          />
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
@@ -79,5 +106,3 @@ export default function ModalAdd() {
     </>
   );
 }
-
-

@@ -1,22 +1,27 @@
 "use client";
 import { Formik, Field, FormikHelpers } from "formik";
+import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
 import ContentInput from "@/app/components/Lexical/ContentInput";
 interface FormValues {
   title: string;
   content: string;
+  category: number;
 }
 import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 interface props{
   onClose: (v:boolean) => void;
 }
 
 export default function FormNewPost({onClose}:props) {
+  const {categories} = useCategoryStore((store) => store);
   const {showToast} = useNotificationStore((store) => store)
   return (
     <Formik
       initialValues={{
         title: "",
         content: "",
+        category: 0
       }}
       onSubmit={async(
         values: FormValues,
@@ -40,8 +45,8 @@ export default function FormNewPost({onClose}:props) {
         }
       }}
     >
-       {({ setFieldValue, handleSubmit }) => (
-         <form onSubmit={handleSubmit} className="space-y-4">
+       {({setFieldValue, handleSubmit }) => (
+         <form onSubmit={handleSubmit} className="space-y-4 p-3 md:p-0">
          <div>
            <label
              htmlFor="title"
@@ -56,6 +61,25 @@ export default function FormNewPost({onClose}:props) {
              className="w-full p-2 border rounded-md bg-background text-foreground"
              required
            />
+         </div>
+         <div className="w-full">
+          <label htmlFor="select" className="block text-sm font-medium text-muted-foreground mb-1">
+            Categoría
+          </label>
+          <Select onValueChange={(value:string) => setFieldValue('category', parseInt(value))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un Categoria" />
+                  </SelectTrigger>
+                <SelectContent>
+                  {
+                    categories &&(
+                      categories.map((data, index) => (
+                        <SelectItem value={data.id.toString()} key={index}>{data.name}</SelectItem>
+                      ))
+                    )
+                  }
+                </SelectContent>
+              </Select>
          </div>
          <div className="w-full">
            <label

@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
+import { usePostsStore} from "@/lib/zustand/providers/PostsStateProvider";
 import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
 import {
   Dialog,
@@ -29,7 +29,7 @@ interface props {
 }
 
 export default function ModalDelete({ id, title }: props) {
-    const {deleteCategories} = useCategoryStore((store) => store)
+    const {deletePost} = usePostsStore((store) => store)
     const {showToast} = useNotificationStore((store) => store)
   const [open, setOpen] = React.useState<boolean>(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
@@ -48,11 +48,11 @@ export default function ModalDelete({ id, title }: props) {
   }, []);
 
   const HandleDelete = async() => {
-    const success = await deleteCategories(id)
+    const success = await deletePost(id)
     if(success){
-        showToast("Categoría eliminada satisfactoriamente", "success")
+        showToast("Post eliminado satisfactoriamente", "success")
     }else{
-        showToast("error al eliminar la categoria", "error")
+        showToast("error al eliminar el post", "error")
     }
     setOpen(false)
   }
@@ -69,7 +69,7 @@ export default function ModalDelete({ id, title }: props) {
             <DialogHeader>
               <DialogTitle>Eliminar Categoria</DialogTitle>
               <DialogDescription>
-                Desea eliminar la categoria: {title}
+                Desea eliminar el post: {title}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -93,7 +93,7 @@ export default function ModalDelete({ id, title }: props) {
           <DrawerHeader className="text-left">
             <DrawerTitle>Eliminar Categoria</DrawerTitle>
             <DrawerDescription>
-              Desea eliminar la categoria: {title}
+              Desea eliminar el post: {title}
             </DrawerDescription>
           </DrawerHeader>
           <DrawerFooter className="pt-2">

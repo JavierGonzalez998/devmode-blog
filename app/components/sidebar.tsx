@@ -13,15 +13,17 @@ export default function Sidebar() {
   const { isOpen, setIsOpen } = useSidebarState();
   const [role, setRole] = React.useState<string | null>(null);
 
-  const FetchRole = async () => {
-    const session = await GetSession();
-    if (session) {
-      setRole(session.user.role);
-    }
-  };
-
   React.useEffect(() => {
-    FetchRole();
+    const FetchRole = async () => {
+      const session = await GetSession();
+      if (session) {
+        setRole(session.user.role);
+      }
+    };
+    if(!role){
+      FetchRole();
+    }
+    
   }, []);
 
   React.useEffect(() => {

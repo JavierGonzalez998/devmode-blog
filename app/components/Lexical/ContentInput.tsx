@@ -32,6 +32,10 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { EmojiPlugin } from "./plugins/emoji-plugin/EmojiPlugin";
 import { parseAllowedColor, parseAllowedFontSize } from "./styleConfig";
 import OnChangePlugin from "./plugins/onChange-plugin/OnChangePlugin";
+import { useEffect, useRef } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { ImageNode } from "./plugins/nodes/ImageNode";
+
 
 const placeholder = "Enter some rich text...";
 
@@ -137,7 +141,7 @@ const editorConfig = {
     import: constructImportMap(),
   },
   namespace: "React.js Demo",
-  nodes: [ParagraphNode, TextNode, EmojiNode],
+  nodes: [ParagraphNode, TextNode, EmojiNode, ImageNode],
   onError(error: Error) {
     throw error;
   },
@@ -145,13 +149,31 @@ const editorConfig = {
 };
 
 interface props{
-  value?: string;
   onChange?: (v:string) => void;
   id?: string;
   name?: string;
+  content?: string;
 }
 
-export default function ContentInput({value, onChange, id, name}:props) {
+
+
+const LoadInitialState = ({ initialJson}: {initialJson:string}) => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    if (initialJson) {
+      editor.update(() => {
+        const parsedEditorState =editor.parseEditorState(initialJson);
+        editor.setEditorState(parsedEditorState);
+      });
+    }
+  }, [initialJson, editor]);
+
+  return null;
+};
+
+export default function ContentInput({content, onChange, id, name}:props) {
+
   const handleEditorChange = (editorState: EditorState) => {
     const json = editorState.toJSON(); // Convierte el estado del editor a JSON o texto
     const serializedValue = JSON.stringify(json);
@@ -161,15 +183,17 @@ export default function ContentInput({value, onChange, id, name}:props) {
   };
 
   return (
-    <div className="max-w-full">
+    <div className="max-w-full max-h-full">
       <LexicalComposer initialConfig={editorConfig}>
+        {content && (
+          <LoadInitialState initialJson={content}/>
+        )}
         <div className="editor-container">
           <ToolbarPlugin />
           <div className="editor-inner">
             <RichTextPlugin
               contentEditable={
                 <ContentEditable
-                  value={value}
                   id={id}
                   name={name}
                   className="editor-input"

@@ -14,7 +14,8 @@ import { usePostsStore } from "@/lib/zustand/providers/PostsStateProvider";
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button";
 import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
-
+import ModalEdit from "../Hovers/Edit/EditPost";
+import ModalDelete from "../Hovers/Delete/DeletePost";
 
 export default function PostTable() {
   const {Posts, getAllPosts, setPostState} = usePostsStore((store) => store);
@@ -63,7 +64,8 @@ export default function PostTable() {
               {
                 post.published ? <Button variant="secondary" onClick={() => handleUpdatePost(post.id, !post.published)}>Retirar</Button>: <Button variant="secondary" onClick={() => handleUpdatePost(post.id, !post.published)}>Publicar</Button>
               }
-              
+              <ModalEdit data={{id:post.id, title: post.title, idCat:post.categories[0].id, content: post.content}}/>
+              <ModalDelete id={post.id} title={post.title} />
             </TableCell>
           </TableRow>
           ))

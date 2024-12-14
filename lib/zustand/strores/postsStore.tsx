@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import { getPosts, addPost as NewPost, SetPublish } from "@/actions/posts-actions";
+import { getPosts, addPost as NewPost, SetPublish, EditPublish, DeletePublish } from "@/actions/posts-actions";
 
 export type PostsState = {
     Posts:({
@@ -23,7 +23,9 @@ export type PostsState = {
 export type PostsActions = {
     getAllPosts: () => void,
     addPost: (data: {title:string; idCat: number, content: string, email: string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
-    setPostState: (id:number, state:boolean) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>
+    setPostState: (id:number, state:boolean) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
+    editPost: (id:number, data:{title:string, content:string, idCat: number, email:string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
+    deletePost: (id:number) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>
 };
 
 export type PostsStore = PostsState & PostsActions;
@@ -61,7 +63,18 @@ export const createPostsStore = (
         const response = await SetPublish(id, state)
         getAllPosts()
         return response
-
+    },
+    editPost:async(id:number, data:{title:string, content:string, idCat: number, email:string}) =>{
+        const {getAllPosts} = get()
+        const response = await EditPublish(id, data);
+        getAllPosts();
+        return response;
+    },
+    deletePost: async(id:number) => {
+        const {getAllPosts} = get()
+        const response = await DeletePublish(id)
+        getAllPosts()
+        return response
     }
 
 }))};

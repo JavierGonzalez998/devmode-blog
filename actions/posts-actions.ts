@@ -62,17 +62,7 @@ export async function addPost(data: {
   if (!categoryExists) {
     return { error: "La categoría especificada no existe" };
   }
-  console.log({
-    title: data.title,
-    content, // Guardar contenido procesado
-    categories: {
-      connect: { id: data.idCat },
-    },
-    author: {
-      connect: { id: idAuth.id },
-    },
-    published: false,
-  });
+
   // Crear el post
   const post = await prisma.post.create({
     data: {
@@ -90,6 +80,43 @@ export async function addPost(data: {
   return { success: true, post };
 }
 
+export async function EditPublish(id:number, data:{title:string, content:string, idCat: number, email:string}){
+  try{
+    const idAuth = await prisma.user.findFirst({
+      where: {
+        email: data.email,
+        role: "admin",
+      },
+      select: {
+        id: true,
+      },
+    });
+  
+    if (!idAuth) {
+      return { error: "Usuario no autorizado para realizar esta acción" };
+    }
+
+    const post = await prisma.post.update({
+      where:{id},
+      data:{
+        title: data.title,
+        content: data.content,
+        categories: {
+          connect: { id: data.idCat },
+        },
+      }
+    })
+
+    if(!post){
+      return {error: "No se encontró el post para editar"}
+    }
+
+    return {success: true}
+
+  }catch(error){
+    return {error: 'error al editar el post'}
+  }
+}
 
 export async function SetPublish(id: number, state:boolean){
   try{
@@ -104,5 +131,28 @@ export async function SetPublish(id: number, state:boolean){
   }catch(error){
     console.log("error al realizar la operacion")
     return {error: "error al realizar la operacion"}
+  }
+}
+
+export async function DeletePublish(id:number){
+  try{
+    const post = await prisma.post.delete({
+      where:{id}
+    })
+    return {success: true}
+  }catch(error){
+    return {error: "Error al eliminar el post"}
+  }
+}
+
+export async function GetPostByName(title:string){
+  try{
+    const post = await prisma.post.findFirst({
+      where:{title}
+    })
+
+    return {data:  post}
+  }catch(error){
+    return {error: "No Data"}
   }
 }

@@ -21,7 +21,7 @@ export interface NotificationStoreProviderProps {
 export const NotificationStoreProvider = ({
   children,
 }: NotificationStoreProviderProps) => {
-  const storeRef = useRef<NotificationStoreApi>();
+  const storeRef = useRef<NotificationStoreApi>(undefined);
   if (!storeRef.current) {
     storeRef.current = createNotificationStore();
   }

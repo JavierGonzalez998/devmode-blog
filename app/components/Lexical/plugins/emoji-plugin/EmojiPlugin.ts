@@ -8,7 +8,7 @@
 'use client'
 
 import { TextNode } from 'lexical';
-import { useEffect } from 'react';
+import { useEffect, type JSX } from 'react';
 import { $createEmojiNode } from './EmoiNode';
 import findEmoji from './findEmoji';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';

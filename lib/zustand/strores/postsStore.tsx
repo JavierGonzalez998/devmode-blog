@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import { getPosts, addPost as NewPost } from "@/actions/posts-actions";
+import { getPosts, addPost as NewPost, SetPublish } from "@/actions/posts-actions";
 
 export type PostsState = {
     Posts:({
@@ -8,12 +8,11 @@ export type PostsState = {
             name: string;
             description: string;
             slug: string;
-        };
+        }[];
     } & {
         id: number;
         title: string;
         content: string;
-        categoryId: number;
         published: boolean;
         authorId: number;
         createdAt: Date;
@@ -23,7 +22,8 @@ export type PostsState = {
 
 export type PostsActions = {
     getAllPosts: () => void,
-    addPost: (data: {title:string; idCat: number, content: string, email: string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>
+    addPost: (data: {title:string; idCat: number, content: string, email: string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
+    setPostState: (id:number, state:boolean) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>
 };
 
 export type PostsStore = PostsState & PostsActions;
@@ -35,7 +35,7 @@ export const defaultInitState: PostsState = {
 export const createPostsStore = (
   initState: PostsState = defaultInitState,
 ) => {
-  return createStore<PostsStore>()((set) => ({
+  return createStore<PostsStore>()((set,get) => ({
     ...initState,
     getAllPosts:async() => {
         const posts = await getPosts();
@@ -44,17 +44,24 @@ export const createPostsStore = (
         }
     },
     addPost: async(data: {title:string; idCat: number, content: string, email: string}) => {
+        const {getAllPosts} = get()
         try{
            const success = await NewPost(data)
-           console.log(success)
-           if(success){
-            console.log(success)
+           if(success.success){
+            getAllPosts()
             return {success: true}
            }
            return {error: "No se pudo agregar un nuevo post, intente nuevamente"}
         }catch(error){
             return {error: "error 500"}
         }
+    },
+    setPostState:async(id:number, state:boolean) => {
+        const {getAllPosts} = get()
+        const response = await SetPublish(id, state)
+        getAllPosts()
+        return response
+
     }
 
 }))};

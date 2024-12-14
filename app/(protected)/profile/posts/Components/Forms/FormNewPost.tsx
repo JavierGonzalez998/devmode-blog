@@ -50,7 +50,7 @@ export default function FormNewPost({onClose}:props) {
         console.log(values)
         if(session){
           const email = session.user.email ? session.user.email : ''
-          const {success} = await addPost({title: values.title, content: values.content, idCat: values.category, email:email})
+          const success = await addPost({title: values.title, content: values.content, idCat: values.category, email:email})
           if (success) {
             showToast("Post creado satisfactoriamente", "success")
             onClose(false)

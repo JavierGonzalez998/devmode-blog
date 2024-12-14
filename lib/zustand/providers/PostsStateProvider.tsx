@@ -21,7 +21,7 @@ export interface PostsStoreProviderProps {
 export const PostsStoreProvider = ({
   children,
 }: PostsStoreProviderProps) => {
-  const storeRef = useRef<PostsStoreApi>();
+  const storeRef = useRef<PostsStoreApi>(undefined);
   if (!storeRef.current) {
     storeRef.current = createPostsStore();
   }

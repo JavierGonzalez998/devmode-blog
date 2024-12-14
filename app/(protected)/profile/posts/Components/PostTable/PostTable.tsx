@@ -11,10 +11,22 @@ import {
 } from "@/components/ui/table";
 import { useEffect } from "react";
 import { usePostsStore } from "@/lib/zustand/providers/PostsStateProvider";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
 
 
 export default function PostTable() {
-  const {Posts, getAllPosts} = usePostsStore((store) => store);
+  const {Posts, getAllPosts, setPostState} = usePostsStore((store) => store);
+  const {showToast} = useNotificationStore((store) => store)
+  const handleUpdatePost = async(id:number, state:boolean) => {
+    const {error} = await setPostState(id, state)
+    if(error){
+      showToast(error, "error")
+    }else{
+      showToast(`El post ha sido ${state ? 'publicado': 'retirado'}!`, "success")
+    }
+  }
 
   useEffect(() => {
     getAllPosts()
@@ -30,18 +42,28 @@ export default function PostTable() {
           <TableHead>Titulo</TableHead>
           <TableHead>Categoría</TableHead>
           <TableHead>Estado</TableHead>
-          <TableHead className="text-center">Acción</TableHead>
+          <TableHead>Creado en</TableHead>
+          <TableHead>Actualizado en</TableHead>
+          <TableHead>Acción</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {
-          Posts && Posts.map((categories, index) => (
+          Posts && Posts.map((post, index) => (
             <TableRow key={index}>
-            <TableCell className="font-medium">{categories.id}</TableCell>
-            <TableCell>{categories.title}</TableCell>
-            <TableCell>{categories.categories.name}</TableCell>
+            <TableCell className="font-medium">{post.id}</TableCell>
+            <TableCell>{post.title}</TableCell>
+            <TableCell>{post.categories[0].name}</TableCell>
+            <TableCell>
+              <Badge variant={post.published ? "default": "secondary"}>{post.published? "Publicado": "No publicado"}</Badge>
+            </TableCell>
+            <TableCell>{post.createdAt.toLocaleString('es-CL', {year: 'numeric', month: 'long', day: "numeric", hour:"numeric", minute:'numeric'})}</TableCell>
+            <TableCell>{post.updatedAt?.toLocaleString('es-CL', {year: 'numeric', month: 'long', day: "numeric", hour:"numeric", minute:'numeric'})}</TableCell>
             <TableCell className="flex justify-center items-center gap-3">
-
+              {
+                post.published ? <Button variant="secondary" onClick={() => handleUpdatePost(post.id, !post.published)}>Retirar</Button>: <Button variant="secondary" onClick={() => handleUpdatePost(post.id, !post.published)}>Publicar</Button>
+              }
+              
             </TableCell>
           </TableRow>
           ))

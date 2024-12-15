@@ -32,7 +32,7 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { EmojiPlugin } from "./plugins/emoji-plugin/EmojiPlugin";
 import { parseAllowedColor, parseAllowedFontSize } from "./styleConfig";
 import OnChangePlugin from "./plugins/onChange-plugin/OnChangePlugin";
-import { useEffect, useRef } from "react";
+import { useEffect} from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ImageNode } from "./plugins/nodes/ImageNode";
 
@@ -183,7 +183,7 @@ export default function ContentInput({content, onChange, id, name}:props) {
   };
 
   return (
-    <div className="max-w-full max-h-full">
+    <div className="max-w-full max-h-96 overflow-y-scroll">
       <LexicalComposer initialConfig={editorConfig}>
         {content && (
           <LoadInitialState initialJson={content}/>

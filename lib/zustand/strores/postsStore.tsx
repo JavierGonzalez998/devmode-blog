@@ -12,6 +12,7 @@ export type PostsState = {
     } & {
         id: number;
         title: string;
+        description: string;
         content: string;
         published: boolean;
         authorId: number;
@@ -22,9 +23,9 @@ export type PostsState = {
 
 export type PostsActions = {
     getAllPosts: () => void,
-    addPost: (data: {title:string; idCat: number, content: string, email: string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
+    addPost: (data: {title:string; description:string; idCat: number, content: string, email: string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
     setPostState: (id:number, state:boolean) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
-    editPost: (id:number, data:{title:string, content:string, idCat: number, email:string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
+    editPost: (id:number, data:{title:string, description:string; content:string, idCat: number, email:string}) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>,
     deletePost: (id:number) => Promise<{success: boolean, error: undefined} | {success: undefined, error:string}>
 };
 
@@ -45,16 +46,18 @@ export const createPostsStore = (
           set({Posts: posts})  
         }
     },
-    addPost: async(data: {title:string; idCat: number, content: string, email: string}) => {
+    addPost: async(data: {title:string; description:string; idCat: number, content: string, email: string}) => {
         const {getAllPosts} = get()
         try{
            const success = await NewPost(data)
+           console.log(success)
            if(success.success){
             getAllPosts()
             return {success: true}
            }
            return {error: "No se pudo agregar un nuevo post, intente nuevamente"}
         }catch(error){
+            console.log(error)
             return {error: "error 500"}
         }
     },
@@ -64,7 +67,7 @@ export const createPostsStore = (
         getAllPosts()
         return response
     },
-    editPost:async(id:number, data:{title:string, content:string, idCat: number, email:string}) =>{
+    editPost:async(id:number, data:{title:string, description:string; content:string, idCat: number, email:string}) =>{
         const {getAllPosts} = get()
         const response = await EditPublish(id, data);
         getAllPosts();

@@ -49,7 +49,7 @@ const ContentRead: React.FC<ContentReadProps> = ({ editorStateJson }) => {
       {/* Cargar el estado inicial y configurar el modo de solo lectura */}
       <ReadOnlyStateLoader editorStateJson={editorStateJson} />
       <RichTextPlugin
-        contentEditable={<ContentEditable />}
+        contentEditable={<ContentEditable/>}
         placeholder={<div>No hay contenido</div>}
         ErrorBoundary={(error) => <ErrorBoundaryComponent error={error.children} />}
       />

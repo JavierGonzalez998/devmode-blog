@@ -3,11 +3,7 @@ import { Formik, Field, FormikHelpers } from "formik";
 import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
 import ContentInput from "@/app/components/Lexical/ContentInput";
 import { GetSession } from "@/actions/get-session";
-interface FormValues {
-  title: string;
-  content: string;
-  category: number;
-}
+
 import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
 import { usePostsStore } from "@/lib/zustand/providers/PostsStateProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,6 +11,14 @@ import { useEffect, useState } from "react";
 import { Session } from "next-auth";
 interface props{
   onClose: (v:boolean) => void;
+}
+
+
+interface FormValues {
+  title: string;
+  content: string;
+  category: number;
+  description: string
 }
 
 export default function FormNewPost({onClose}:props) {
@@ -40,7 +44,8 @@ export default function FormNewPost({onClose}:props) {
       initialValues={{
         title: "",
         content: "",
-        category: 0
+        category: 0,
+        description: ""
       }}
       onSubmit={async(
         values: FormValues,
@@ -50,7 +55,7 @@ export default function FormNewPost({onClose}:props) {
         console.log(values)
         if(session){
           const email = session.user.email ? session.user.email : ''
-          const success = await addPost({title: values.title, content: values.content, idCat: values.category, email:email})
+          const success = await addPost({title: values.title, description: values.description, content: values.content, idCat: values.category, email:email})
           if (success) {
             showToast("Post creado satisfactoriamente", "success")
             onClose(false)
@@ -74,6 +79,21 @@ export default function FormNewPost({onClose}:props) {
              type="text"
              id="title"
              name="title"
+             className="w-full p-2 border rounded-md bg-background text-foreground"
+             required
+           />
+         </div>
+         <div>
+           <label
+             htmlFor="description"
+             className="block text-sm font-medium text-muted-foreground mb-1"
+           >
+             Description
+           </label>
+           <Field
+             type="text"
+             id="description"
+             name="description"
              className="w-full p-2 border rounded-md bg-background text-foreground"
              required
            />

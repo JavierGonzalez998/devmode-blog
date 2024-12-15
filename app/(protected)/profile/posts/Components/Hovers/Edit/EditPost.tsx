@@ -23,10 +23,11 @@ import { CiEdit } from "react-icons/ci";
 
 interface props {
     data:{
-        id:number,
-        title:string,
-        content:string,
-        idCat: number
+        id:number;
+        title:string;
+        description: string;
+        content:string;
+        idCat: number;
     }
 }
 
@@ -55,7 +56,7 @@ export default function ModalEdit({ data }: props) {
           Editar
         </Button>
         <Dialog open={open} onOpenChange={() => setOpen(false)}>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-6xl">
             <DialogHeader>
               <DialogTitle>Editar Categoria</DialogTitle>
               <DialogDescription>

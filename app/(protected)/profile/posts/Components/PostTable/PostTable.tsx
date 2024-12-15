@@ -41,6 +41,7 @@ export default function PostTable() {
         <TableRow>
           <TableHead className="w-[100px]">ID</TableHead>
           <TableHead>Titulo</TableHead>
+          <TableHead>Descripción</TableHead>
           <TableHead>Categoría</TableHead>
           <TableHead>Estado</TableHead>
           <TableHead>Creado en</TableHead>
@@ -54,6 +55,7 @@ export default function PostTable() {
             <TableRow key={index}>
             <TableCell className="font-medium">{post.id}</TableCell>
             <TableCell>{post.title}</TableCell>
+            <TableCell className="truncate max-w-32 overflow-hidden whitespace-nowrap">{post.description}</TableCell>
             <TableCell>{post.categories[0].name}</TableCell>
             <TableCell>
               <Badge variant={post.published ? "default": "secondary"}>{post.published? "Publicado": "No publicado"}</Badge>
@@ -64,7 +66,7 @@ export default function PostTable() {
               {
                 post.published ? <Button variant="secondary" onClick={() => handleUpdatePost(post.id, !post.published)}>Retirar</Button>: <Button variant="secondary" onClick={() => handleUpdatePost(post.id, !post.published)}>Publicar</Button>
               }
-              <ModalEdit data={{id:post.id, title: post.title, idCat:post.categories[0].id, content: post.content}}/>
+              <ModalEdit data={{id:post.id, title: post.title, description:post.description, idCat:post.categories[0].id, content: post.content}}/>
               <ModalDelete id={post.id} title={post.title} />
             </TableCell>
           </TableRow>

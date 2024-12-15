@@ -37,6 +37,7 @@ model categories {
 
 model post {
   id         Int          @id @default(autoincrement())
+  description String
   content    String       @db.LongText
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt

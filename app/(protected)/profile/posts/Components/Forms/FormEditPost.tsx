@@ -7,6 +7,7 @@ interface FormValues {
   title: string;
   content: string;
   category: string;
+  description: string;
 }
 import { useNotificationStore } from "@/lib/zustand/providers/NotificationStateProvider";
 import { usePostsStore } from "@/lib/zustand/providers/PostsStateProvider";
@@ -19,7 +20,8 @@ interface props{
     id: number;
     title: string;
     idCat: number;
-    content: string
+    content: string;
+    description: string;
   }
 }
 
@@ -46,7 +48,8 @@ export default function FormEditPost({onClose, data}:props) {
       initialValues={{
         title: data.title,
         content: data.content,
-        category: data.idCat.toString()
+        category: data.idCat.toString(),
+        description: data.description
       }}
       onSubmit={async(
         values: FormValues,
@@ -56,7 +59,7 @@ export default function FormEditPost({onClose, data}:props) {
         console.log(values)
         if(session){
           const email = session.user.email ? session.user.email : ''
-          const success = await editPost(data.id, {title: values.title, content: values.content, idCat: parseInt(values.category), email:email})
+          const success = await editPost(data.id, {title: values.title, description:values.description, content: values.content, idCat: parseInt(values.category), email:email})
           if (success) {
             showToast("Post creado satisfactoriamente", "success")
             onClose(false)
@@ -80,6 +83,21 @@ export default function FormEditPost({onClose, data}:props) {
              type="text"
              id="title"
              name="title"
+             className="w-full p-2 border rounded-md bg-background text-foreground"
+             required
+           />
+         </div>
+         <div>
+           <label
+             htmlFor="description"
+             className="block text-sm font-medium text-muted-foreground mb-1"
+           >
+             Description
+           </label>
+           <Field
+             type="text"
+             id="description"
+             name="description"
              className="w-full p-2 border rounded-md bg-background text-foreground"
              required
            />

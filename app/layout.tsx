@@ -32,9 +32,9 @@ export default async function RootLayout({
           <CategoryStoreProvider>
             <NotificationStoreProvider>
               <SessionStoreProvider>
-                <div className="flex flex-col h-screen">
+                <div className="flex flex-col h-[93vh] max-w-[98vw]">
                   <Header />
-                  <div className="flex gap-3 h-[93vh]">
+                  <div className="flex gap-3 max-h-full ">
                     <div className="h-full">
                       <Sidebar />
                     </div>

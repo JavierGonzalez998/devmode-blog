@@ -43,7 +43,7 @@ export default function ModalAdd() {
       <>
         <Button onClick={() => setOpen(true)}>Agregar nuevo post</Button>
         <Dialog open={open} onOpenChange={() => setOpen(false)}>
-          <DialogContent className="sm:max-w-6xl">
+          <DialogContent className="sm:max-w-6xl md:max-w-2xl">
             <DialogHeader>
               <DialogTitle>Añadir Post</DialogTitle>
               <DialogDescription>

@@ -5,26 +5,19 @@ import { Menu, X } from "lucide-react";
 import { useSidebarState } from "@/app/hooks/useSidebarState";
 import * as React from "react";
 import Divider from "./divider";
-import { GetSession } from "@/actions/get-session";
 import { useCategoryStore } from "@/lib/zustand/providers/CategoriesStateProvider";
+import { useSessionStore } from "@/lib/zustand/providers/SessionStateProvider";
 
 export default function Sidebar() {
+  const {session,getSession} = useSessionStore((store) => store)
   const { categories, getCategories } = useCategoryStore((store) => store);
   const { isOpen, setIsOpen } = useSidebarState();
-  const [role, setRole] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    const FetchRole = async () => {
-      const session = await GetSession();
-      if (session) {
-        setRole(session.user.role);
-      }
-    };
-    if(!role){
-      FetchRole();
+    if(!session){
+      getSession()
     }
-    
-  }, []);
+  }, [getSession, session]);
 
   React.useEffect(() => {
     getCategories();
@@ -77,7 +70,7 @@ export default function Sidebar() {
               : null}
           </ul>
           <Divider />
-          {role && (
+          {session?.user.role && (
             <ul className="space-y-2 flex flex-col justify-center items-center">
               <Link
                 href={`/profile`}
@@ -86,7 +79,7 @@ export default function Sidebar() {
               >
                 Profile
               </Link>
-              {role == "admin" ? (
+              {session?.user.role == "admin" ? (
                 <>
                   <Link
                     href={`/profile/posts`}

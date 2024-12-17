@@ -9,6 +9,16 @@ export async function getPosts() {
   return posts;
 }
 
+export async function getPublishedPosts() {
+  const posts = await prisma.post.findMany({
+    where: {published: true},
+    include: { categories: true },
+    orderBy: { createdAt: "desc" },
+    take: 5
+  });
+  return posts;
+}
+
 export async function getPostByCategoryId(id:number){
   try{
     const posts = await prisma.post.findMany({

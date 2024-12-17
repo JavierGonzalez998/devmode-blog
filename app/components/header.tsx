@@ -5,22 +5,12 @@ import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { Moon, Sun } from 'lucide-react'
 import { signOut } from 'next-auth/react'
-import {GetSession} from '@/actions/get-session'
-import { Session } from 'next-auth'
+import { useSessionStore } from '@/lib/zustand/providers/SessionStateProvider'
 
 export default function Header() {
+  const {session} = useSessionStore((store) => store);
   const { theme, setTheme } = useTheme()
-  const [session, setSession] = React.useState<Session>()
 
-  React.useEffect(() => {
-    const fetchSession = async() => {
-      const session = await GetSession()
-      if(session){
-        setSession(session)
-      }
-    }
-    fetchSession()
-  },[])
   return (
     <header className="border-b border-border sticky top-0 bg-background z-20">
       <div className="container mx-auto px-4 py-3 flex justify-end items-center">

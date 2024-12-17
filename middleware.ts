@@ -13,11 +13,13 @@ export const config = {
   ],
 }
 
-const publicRoutes = ["/","/auth/login","/auth/register", "/blog", "/category"]
+const publicRoutes = ["/","/auth/login","/auth/register", "/blog/", "/category/"]
 
 export default middleware((req) => {
   const {nextUrl, auth} = req
+  const reg = /\/[a-z]+\/[a-z1-9\W]+/g
   const isLoggedIn = !!auth?.user
+  console.log("route: ", nextUrl.pathname,"\n is public: ", publicRoutes.includes(nextUrl.pathname))
   if(!publicRoutes.includes(nextUrl.pathname) && !isLoggedIn){
     return NextResponse.redirect(new URL("/auth/login", nextUrl))
   }

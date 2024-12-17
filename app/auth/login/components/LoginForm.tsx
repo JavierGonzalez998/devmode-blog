@@ -2,7 +2,7 @@
 import { loginAction } from '@/actions/auth-actions';
 import { useTransition } from 'react';
 import { Formik, Field, Form, FormikHelpers } from 'formik';
-
+import { useSessionStore } from '@/lib/zustand/providers/SessionStateProvider';
 import { useRouter } from 'next/navigation'
 
 export interface Values {
@@ -12,6 +12,7 @@ export interface Values {
 
 
 export default function LoginForm() {
+    const {getSession} = useSessionStore((store) => store)
     const router = useRouter()
     const [isPending, startTransition] = useTransition();
     return (
@@ -28,6 +29,7 @@ export default function LoginForm() {
                     if (response.error) {
                         console.log(response.error)
                     } else {
+                        getSession();
                         router.push("/dashboard")
                     }
                 })

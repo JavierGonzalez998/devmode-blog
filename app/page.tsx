@@ -1,5 +1,5 @@
 import BlogCard from "@/app/components/blog-card";
-import { getPosts } from "@/actions/posts-actions";
+import { getPublishedPosts } from "@/actions/posts-actions";
 
 export type Post = {
   categories: {
@@ -20,7 +20,7 @@ export type Post = {
 };
 
 export default async function Home() {
-  const posts = await getPosts();
+  const posts = await getPublishedPosts();
 
   return (
     <>

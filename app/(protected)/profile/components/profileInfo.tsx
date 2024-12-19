@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import FormEditProfile from "./forms/formEditProfile";
 import { useSessionStore } from "@/lib/zustand/providers/SessionStateProvider";
 export default function ProfileInfo() {
   const { session } = useSessionStore((store) => store);
@@ -14,6 +15,9 @@ export default function ProfileInfo() {
             Visualizar Perfil
           </Button>
         </div>
+        <section className="w-96">
+          <FormEditProfile />
+        </section>
       </>
     );
   }
@@ -26,7 +30,7 @@ export default function ProfileInfo() {
       </div>
       <section className="w-96">
         <div className="ml-10 w-full">
-            <h5>Perfil: </h5>
+          <h5>Perfil: </h5>
         </div>
         <pre className="ml-16 mt-5">
           {JSON.stringify(
